@@ -1,0 +1,50 @@
+---
+
+- name: Apt key (url).
+  apt_key:
+    url: "{{ item.key.url }}"
+    id: "{{ item.key.id }}"
+    state: "{{ apt_source_state }}"
+  with_flattened:
+    - apt_source_all
+    - apt_source_group
+    - apt_source_host
+  when:
+    item.key.url is defined
+
+
+- name: Apt key (keyserver).
+  apt_key:
+    keyserver: "{{ item.key.keyserver }}"
+    id: "{{item.key.id}}"
+    state: "{{ apt_source_state }}"
+  with_flattened:
+    - apt_source_all
+    - apt_source_group
+    - apt_source_host
+  when:
+    item.key.keyserver is defined
+
+
+# sadly ansible needs a workaround for removing files -.-
+- name: Apt key (gpg_file).
+  copy:
+    src: "{{ item.key.gpg_file }}"
+    dest: "/etc/apt/trusted.gpg.d/{{ item.key.gpg_file }}"
+  with_flattened:
+    - apt_source_all
+    - apt_source_group
+    - apt_source_host
+  when:
+    item.key.gpg_file is defined
+- name: remove apt key (gpg_file)
+  file:
+    dest: "/etc/apt/trusted.gpg.d/{{ item.key.gpg_file }}"
+    state: "absent"
+  with_flattened:
+    - apt_source_all
+    - apt_source_group
+    - apt_source_host
+  when:
+    item.key.gpg_file is defined
+    and apt_source_state == "absent"

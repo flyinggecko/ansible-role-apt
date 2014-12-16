@@ -1,0 +1,20 @@
+---
+
+- name: remove /etc/apt/sources.lists
+  file:
+    dest: "/etc/apt/sources.list"
+    state: "absent"
+
+
+- name: add/del repositories
+  apt_repository:
+    repo: "{{ item.source }}"
+    state: "{{ apt_source_state }}"
+  with_flattened:
+  - apt_source_all
+  - apt_source_group
+  - apt_source_host
+
+
+# Update APT package lists
+- apt: update_cache=yes

@@ -1,0 +1,14 @@
+---
+# tasks file for apt
+
+- include: apt-key.yml
+  when:
+    ansible_pkg_mgr == "apt"
+
+- include: apt-repo.yml
+  when:
+    ansible_pkg_mgr == "apt"
+
+- include: apt-pin.yml
+  when:
+    ansible_pkg_mgr == "apt"

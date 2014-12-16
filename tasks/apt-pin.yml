@@ -1,0 +1,33 @@
+---
+
+- name: remove /etc/apt/preferences
+  file:
+    dest: "/etc/apt/preferences"
+    state: "absent"
+
+
+- name: Set pin
+  template:
+    src: preferences.j2
+    dest: "{{ item.filepath|default(apt_pin_dir) }}{{ item.pattern|regex_replace('[^A-Za-z0-9]', '')}}"
+    owner: root
+    group: root
+    mode: 0644
+  with_flattened:
+    - apt_pin_all
+    - apt_pin_group
+    - apt_pin_host
+  when:
+    apt_source_state == "present"
+    and item.pattern is defined
+    and item.pin is defined
+- name: Remove pin when state is absent
+  file:
+    dest: "{{ item.filepath|default(apt_pin_dir) }}{{ item.pattern|regex_replace('[^A-Za-z0-9]', '')}}"
+    state: absent
+  with_flattened:
+    - apt_pin_all
+    - apt_pin_group
+    - apt_pin_host
+  when:
+    apt_source_state == "absent"
