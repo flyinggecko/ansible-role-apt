@@ -5,7 +5,6 @@
     dest: "/etc/apt/sources.list"
     state: "absent"
 
-
 - name: add/del repositories
   apt_repository:
     repo: "{{ item.source }}"
@@ -14,7 +13,7 @@
   - apt_source_all
   - apt_source_group
   - apt_source_host
-
+  notify: ['update sources']
 
 # Update APT package lists
 - apt: update_cache=yes
