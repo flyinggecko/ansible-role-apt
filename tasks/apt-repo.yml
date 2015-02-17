@@ -16,4 +16,4 @@
   notify: ['update sources']
 
 # Update APT package lists
-- apt: update_cache=yes
+#- apt: update_cache=yes
