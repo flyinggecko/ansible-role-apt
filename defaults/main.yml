@@ -1,5 +1,7 @@
 ---
-apt_pin_dir: "/etc/apt/preferences.d"
+apt_pin_dir: "/etc/apt/preferences.d/"
+apt_conf_dir: "/etc/apt/apt.conf.d/"
+apt_conf_filepath: "{{ apt_conf_dir }}/{{ item.name }}"
 apt_source_state: "{{ item.state | default('present') }}"
 
 apt_source_host: []
@@ -9,3 +11,7 @@ apt_source_all: []
 apt_pin_host: []
 apt_pin_group: []
 apt_pin_all: []
+
+apt_option_host: []
+apt_option_group: []
+apt_option_all: []

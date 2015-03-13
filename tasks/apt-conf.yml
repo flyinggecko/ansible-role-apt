@@ -1,0 +1,26 @@
+---
+
+- name: set apt options
+  template:
+    src: apt.conf.j2
+    dest: "{{ item.filepath|default(apt_conf_filepath) }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_flattened:
+    - apt_option_all
+    - apt_option_group
+    - apt_option_host
+  when:
+    apt_source_state == "present"
+    and item.options is defined 
+- name: Remove apt.conf-file when state is absent
+  file:
+    dest: "{{ item.filepath|default(apt_conf_filepath) }}"
+    state: absent
+  with_flattened:
+    - apt_option_all
+    - apt_option_group
+    - apt_option_host
+  when:
+    apt_source_state == "absent"
