@@ -1,0 +1,34 @@
+---
+
+
+# get list of foreign architectures
+- name: get list of foreign architectures
+  shell: "dpkg --print-foreign-architectures | cut -f 1 -d':' | tr '\\n' ','"
+  register: existing_architectures
+  changed_when: false
+
+# add architecture on system
+- name: add architecture on system
+  shell: 'dpkg --add-architecture {{ item.arch }}'
+  with_flattened:
+    - apt_architecture_all
+    - apt_architecture_group
+    - apt_architecture_host
+  when:
+    item.arch is defined
+    and apt_source_state == "present"
+    and item.arch not in existing_architectures.stdout
+  notify: ['update sources']
+
+# remove architecture from system
+- name: remove architecture from system
+  shell: 'dpkg --remove-architecture {{ item.arch }}'
+  with_flattened:
+    - apt_architecture_all
+    - apt_architecture_group
+    - apt_architecture_host
+  when:
+    item.arch is defined
+    and apt_source_state != "present"
+    and item.arch in existing_architectures.stdout
+  notify: ['update sources']

@@ -15,3 +15,7 @@ apt_pin_all: []
 apt_option_host: []
 apt_option_group: []
 apt_option_all: []
+
+apt_architecture_host: []
+apt_architecture_group: []
+apt_architecture_all: []
